@@ -1,5 +1,5 @@
 #include "ap.h"
-#include "pico/stdlib.h"
+
 
 const uint8_t LED_PIN = PICO_DEFAULT_LED_PIN;
 
@@ -12,8 +12,8 @@ void apInit()
 	*/
  	gpio_init(LED_PIN);
   gpio_set_dir(LED_PIN, GPIO_OUT);
-	stdio_init_all();
 
+	uartOpen(_DEF_UART1, 38400);
 
 }
 
@@ -26,9 +26,10 @@ void apMain()
 		lcdPrintf(_DEF_LCD1, 0, 0, WHITE, "Hello, world!");
 		lcdUpdateFrame(_DEF_LCD1);
 		*/
+		uartPrintf(_DEF_UART1, "Hello, world!\n");
 		gpio_put(LED_PIN, 1);
-		sleep_ms(250);
+		delay(250);
 		gpio_put(LED_PIN, 0);
-		sleep_ms(250);
+		delay(250);
 	}
 }

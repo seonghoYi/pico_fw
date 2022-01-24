@@ -1,42 +1,22 @@
 #include "bsp.h"
 
-#include <hardware/structs/clocks.h>
-//#include <hardware/structs/pll.h>
-
 
 
 void bspInit()
 {
-/*
+  set_sys_clock_khz(133000, true);
 
-  pll_init(pll_sys, 12, 1500, 6, 2);
-
-  clock_configure(clk_sys,
-                  CLOCKS_CLK_SYS_CTRL_SRC_VALUE_CLKSRC_CLK_SYS_AUX,
-                  CLOCKS_CLK_SYS_CTRL_AUXSRC_VALUE_CLKSRC_PLL_USB,
-                  125 * MHZ,
-                  48 * MHZ);
-
-  //pll_deinit(pll_sys);
-
-  clock_configure(clk_peri,
-                  0,
-                  CLOCKS_CLK_PERI_CTRL_AUXSRC_VALUE_CLK_SYS,
-                  48 * MHZ,
-                  48 * MHZ);
-
-*/
-
+  stdio_init_all();
 }
 
 
 
 uint32_t millis()
 {
-	return 0;
+	return to_ms_since_boot(get_absolute_time());
 }
 
 void delay(uint32_t ms)
 {
-	
+	sleep_ms(ms);
 }

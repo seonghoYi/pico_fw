@@ -3,7 +3,7 @@
 
 #include "def.h"
 
-
+#include "pico/stdlib.h"
 #include <hardware/clocks.h>
 #include <hardware/pll.h>
 

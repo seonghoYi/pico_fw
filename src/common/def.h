@@ -9,14 +9,14 @@
 #include <stdlib.h>
 
 
-
+#define _DEF_UART1  0
+#define _DEF_UART2  1
 
 #define _DEF_I2C1		0
 #define _DEF_I2C2		1
 
 #define _DEF_LCD1		0
 #define _DEF_LCD2		1
-
 
 
 #define _DEF_OUTPUT	0

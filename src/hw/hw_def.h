@@ -6,8 +6,12 @@
 
 
 
-#define _USE_HW_I2C
+//#define _USE_HW_I2C
 #define 		 HW_I2C_CH_MAX 					1
+
+
+#define _USE_HW_UART
+#define      HW_UART_MAX_CH         1
 
 
 //#define _USE_HW_SSD1306

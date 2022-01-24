@@ -5,7 +5,7 @@ set(PRJ_NAME pico_fw)
 # initialize the SDK based on PICO_SDK_PATH
 # note: this must happen before project()
 
-set(PICO_SDK_PATH C:/Work/pico/pico_fw/src/lib/pico-sdk)
+set(PICO_SDK_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pico-sdk)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 include(${PICO_SDK_PATH}/external/pico_sdk_import.cmake)

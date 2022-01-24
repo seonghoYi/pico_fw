@@ -3,6 +3,7 @@
 
 #include "hw_def.h"
 
+#include "uart.h"
 //#include "i2c.h"
 //#include "lcd.h"
 
