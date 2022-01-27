@@ -14,7 +14,7 @@
 
 
 static bool is_init = false;
-static void (*frameCallBack)(void) = NULL;
+volatile static void (*frameCallBack)(void) = NULL;
 
 bool 			ssd1306Reset(void);
 bool 			ssd1306SetWindow(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
@@ -81,7 +81,7 @@ bool ssd1306DriverInit(lcd_driver_t *lcd_driver)
 bool ssd1306Reset(void)
 {
 	bool ret = true;
-	ret &= i2cBegin(_DEF_I2C1, 400);
+	ret &= i2cBegin(_DEF_I2C1, 1000);
 	
 	ret &= ssd1306WriteCommand(0xAE); //Off display
 
@@ -155,7 +155,6 @@ bool ssd1306SendBuffer(uint8_t *buf)
 {
 	bool ret = true;
 	ret &= ssd1306WriteData(buf);
-
 	if (frameCallBack != NULL)
 	{
 		frameCallBack();
@@ -167,10 +166,10 @@ bool ssd1306SendBuffer(uint8_t *buf)
 bool ssd1306SetCallBack(void (*func)(void))
 {
 	bool ret = true;
-	if (func == NULL)
-	{
-		frameCallBack = func;
-	}
+	
+	
+	frameCallBack = func;
+
 
 	return ret;
 }
