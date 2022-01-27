@@ -26,4 +26,12 @@
 #define _DEF_HIGH		1
 
 
+
+#define constrain(in,low,high) ((in)<(low)?(low):((in)>(high)?(high):(in)))
+
+#ifndef map
+#define map(input, in_min, in_max, out_min, out_max) ((input - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
+#endif
+
+
 #endif /* SRC_COMMON_DEF_H_ */
