@@ -85,7 +85,7 @@ uint8_t uartRead(uint8_t ch)
   switch (ch)
   {
   case _DEF_UART1:
-    stdio_usb.in_chars((char *)ret, 1);
+    stdio_usb.in_chars((char *)&ret, 1);
     break;
   case _DEF_UART2:
     
@@ -145,7 +145,14 @@ uint32_t uartGetBaud(uint8_t ch)
 
 bool uartFlush(uint8_t ch)
 {
+  bool ret = true;
 
+  while(uartAvailable(ch))
+  {
+    uartRead(ch);
+  }
+  
+  return ret;
 }
 
 
