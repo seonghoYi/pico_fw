@@ -8,6 +8,7 @@ add_executable(${PRJ_NAME}
   hw/driver/uart.c
   hw/driver/i2c.c
 
+  hw/driver/cli.c
 
   hw/driver/lcd/font.c
   hw/driver/lcd/ssd1306.c

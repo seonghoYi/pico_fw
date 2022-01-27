@@ -6,6 +6,7 @@
 #include "uart.h"
 #include "i2c.h"
 #include "lcd.h"
+#include "cli.h"
 
 
 bool hwInit();
