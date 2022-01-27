@@ -28,8 +28,8 @@ void apMain()
 		//printf("Hello, world!\n");
 		//printf("%X\n", uartRead(_DEF_UART1));
 		
-		lcdPrintf(_DEF_LCD1, 0, 0, WHITE, "Hello, world!");
-		lcdUpdateFrame(_DEF_LCD1);
+		//lcdPrintf(_DEF_LCD1, 0, 0, WHITE, "Hello, world!");
+		//lcdUpdateFrame(_DEF_LCD1);
 
 
 		cliMain();

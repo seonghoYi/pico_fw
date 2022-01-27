@@ -1,8 +1,16 @@
 #include "lcd.h"
+#include "cli.h"
 #include "lcd/lcd_fonts.h"
 
 
 #ifdef _USE_HW_LCD
+
+
+#ifdef _USE_HW_CLI
+
+static void cliLcd(cli_args_t *args);
+
+#endif
 
 
 
@@ -92,7 +100,9 @@ bool lcdInit()
 			lcd_tbl[i].is_init = true;
 		}
 	}
-
+#ifdef _USE_HW_CLI
+	cliAdd("LCD", cliLcd);
+#endif
 	return ret;
 }
 
@@ -200,6 +210,17 @@ void lcdClearBuffer(uint8_t ch)
 
 	break;
 	}
+}
+
+
+uint32_t lcdGetDrawTime(uint8_t ch)
+{
+	return lcd_tbl[ch].fps_time;
+}
+
+uint32_t lcdGetFps(uint8_t ch)
+{
+	return lcd_tbl[ch].fps_count;
 }
 
 void lcdDrawPixel(uint8_t ch, uint32_t x, uint32_t y, uint8_t color)
@@ -379,6 +400,51 @@ void lcdDrawCircle(uint8_t ch, uint32_t par_x, uint32_t par_y, uint32_t par_r, u
 }
 
 
+#ifdef _USE_HW_CLI
 
+static void cliLcd(cli_args_t *args)
+{
+	bool ret = true;
+	uint8_t ch;
+
+	if (args->argc == 2)
+	{
+		if (args->isStr(0, "test") == true)
+		{
+			ch = args->getData(1);
+			ch = constrain(ch, 1, LCD_MAX_CH);
+			ch -= 1;
+
+			while(cliKeepLoop())
+			{
+				lcdPrintf(ch, 0, 10*0, WHITE, "LCD TEST");
+				lcdPrintf(ch, 0, 10*1, WHITE, "FPS: %d", lcdGetFps(ch));
+				lcdPrintf(ch, 0, 10*2, WHITE, "ms: %d", lcdGetDrawTime(ch));
+
+				lcdDrawRectangle(ch, 0, 35, 10, 10, WHITE);
+				lcdDrawCircle(ch, 15, 40, 5, WHITE);
+
+				lcdUpdateFrame(ch);
+			}
+
+			lcdFillScreen(ch, BLACK);
+			lcdUpdateFrame(ch);
+		}
+	}
+	else
+	{
+		ret = false;
+	}
+
+
+	if (ret == false)
+	{
+		cliPrintf("lcd test channel[1~1]\n");
+	}
+
+}
+
+
+#endif
 
 #endif
