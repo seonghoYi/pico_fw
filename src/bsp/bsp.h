@@ -3,11 +3,12 @@
 
 #include "def.h"
 
-#include "pico/stdlib.h"
+#include <pico/binary_info.h>
+#include <pico/stdlib.h>
 #include <hardware/clocks.h>
 #include <hardware/pll.h>
 
-void bspInit();
+bool bspInit();
 
 uint32_t millis();
 void delay(uint32_t ms);

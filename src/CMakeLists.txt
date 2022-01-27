@@ -6,7 +6,12 @@ add_executable(${PRJ_NAME}
   common/core/qbuffer.c
   hw/hw.c
   hw/driver/uart.c
-  
+  hw/driver/i2c.c
+
+
+  hw/driver/lcd/font.c
+  hw/driver/lcd/ssd1306.c
+  hw/driver/lcd.c 
 
 )
 
@@ -18,6 +23,7 @@ target_include_directories(${PRJ_NAME} PUBLIC
   common/core
   common/hw/include
   hw
+  hw/include/lcd
 
 )
 
@@ -25,6 +31,7 @@ target_link_libraries(${PRJ_NAME}
   pico_stdlib
   hardware_clocks
   hardware_pll
+  hardware_i2c
 )
 
 

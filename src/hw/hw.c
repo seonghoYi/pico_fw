@@ -3,10 +3,12 @@
 
 
 
-void hwInit()
+bool hwInit()
 {
-	bspInit();
-	uartInit();
-	//i2cInit();
-	//lcdInit();
+	bool ret = true;
+	ret &= bspInit();
+	ret &= uartInit();
+	ret &= i2cInit();
+	ret &= lcdInit();
+	return ret;
 }

@@ -2,11 +2,16 @@
 
 
 
-void bspInit()
+bool bspInit()
 {
+  bool ret = true;
   set_sys_clock_khz(133000, true);
 
   stdio_init_all();
+
+
+  delay(1000);
+  return ret;
 }
 
 

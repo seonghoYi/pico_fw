@@ -13,9 +13,6 @@
 
 
 
-
-
-
 static bool is_init = false;
 static void (*frameCallBack)(void) = NULL;
 
@@ -30,7 +27,7 @@ bool 			ssd1306SetCallBack(void (*func)(void));
 bool ssd1306WriteCommand(uint8_t cmd)
 {
 	bool ret = false;
-	if(i2cMemWrite(_DEF_SSD1306, _DEF_SSD1306_I2C_ADDR, 0x00, 1, &cmd, 1) != 0)
+	if(i2cMemWrite(_DEF_SSD1306, _DEF_SSD1306_I2C_ADDR, 0x00, 1, &cmd, 1) > 0)
 	{
 		ret = true;
 	}
@@ -47,11 +44,12 @@ bool ssd1306WriteData(uint8_t *buf)
 		ret &= ssd1306WriteCommand(0x00);
 		ret &= ssd1306WriteCommand(0x10);
 
-		if(i2cMemWrite(_DEF_SSD1306, _DEF_SSD1306_I2C_ADDR, 0x40, 1, &buf[SSD1306_WIDTH * i], SSD1306_WIDTH) == 0)
+		if(i2cMemWrite(_DEF_SSD1306, _DEF_SSD1306_I2C_ADDR, 0x40, 1, &buf[SSD1306_WIDTH * i], SSD1306_WIDTH) <= 0)
 		{
 			ret = false;
 		}
 	}
+
 	return ret;
 }
 
@@ -83,10 +81,8 @@ bool ssd1306DriverInit(lcd_driver_t *lcd_driver)
 bool ssd1306Reset(void)
 {
 	bool ret = true;
-
-	ret &= i2cBegin(_DEF_I2C1, 100);
-
-
+	ret &= i2cBegin(_DEF_I2C1, 400);
+	
 	ret &= ssd1306WriteCommand(0xAE); //Off display
 
 	ret &= ssd1306WriteCommand(0x20); //Set memory addressing mode
@@ -133,9 +129,6 @@ bool ssd1306Reset(void)
 
 	ret &= ssd1306WriteCommand(0xAF); //On display
 
-
-
-
 	return ret;
 }
 
@@ -161,7 +154,6 @@ uint32_t ssd1306GetHeight()
 bool ssd1306SendBuffer(uint8_t *buf)
 {
 	bool ret = true;
-
 	ret &= ssd1306WriteData(buf);
 
 	if (frameCallBack != NULL)

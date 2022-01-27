@@ -46,7 +46,7 @@ typedef struct
 
 lcd_tbl_t lcd_tbl[LCD_MAX_CH] = {
 		{false, false, &ssd1306_driver, &font_07x10, &ssd1306_buffer[0], SSD1306_WIDTH * SSD1306_HEIGHT / SSD1306_NUM_PAGE, 0, 0, 0},
-		{false, false, &ili9481_driver, &font_07x10, NULL, 0, 0, 0, 0},
+		//{false, false, &ili9481_driver, &font_07x10, NULL, 0, 0, 0, 0},
 };
 
 
@@ -72,7 +72,6 @@ void ssd1306DoneISR(void)
 bool lcdInit()
 {
 	bool ret = true;
-
 #ifdef _USE_HW_SSD1306
 	ret &= ssd1306DriverInit(lcd_tbl[_DEF_LCD1].driver);
 	ret &= lcd_tbl[_DEF_LCD1].driver->setCallBack(ssd1306DoneISR);
@@ -111,7 +110,6 @@ bool lcdReset(uint8_t ch)
 	{
 	case _DEF_LCD1:
 #ifdef _USE_HW_SSD1306
-
 	ret &= lcd_tbl[_DEF_LCD1].driver->init();
 	lcdFillScreen(_DEF_LCD1, BLACK);
 	ret &= lcdUpdateFrame(_DEF_LCD1);
@@ -120,8 +118,11 @@ bool lcdReset(uint8_t ch)
 #endif
 	break;
 	case _DEF_LCD2:
+#ifdef _USE_HW_ILI9481
 	ret &= lcd_tbl[_DEF_LCD2].driver->init();
 
+
+#endif
 	break;
 	}
 

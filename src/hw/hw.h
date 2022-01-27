@@ -4,10 +4,10 @@
 #include "hw_def.h"
 
 #include "uart.h"
-//#include "i2c.h"
-//#include "lcd.h"
+#include "i2c.h"
+#include "lcd.h"
 
 
-void hwInit();
+bool hwInit();
 
 #endif /* SRC_HW_HW_H_ */
