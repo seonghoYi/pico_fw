@@ -5,6 +5,8 @@ add_executable(${PRJ_NAME}
   bsp/bsp.c
   common/core/qbuffer.c
   hw/hw.c
+  hw/driver/gpio.c
+  hw/driver/led.c
   hw/driver/uart.c
   hw/driver/i2c.c
 
@@ -32,6 +34,7 @@ target_link_libraries(${PRJ_NAME}
   pico_stdlib
   hardware_clocks
   hardware_pll
+  hardware_gpio
   hardware_i2c
 )
 

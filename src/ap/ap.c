@@ -2,14 +2,9 @@
 
 
 
-const uint8_t LED_PIN = PICO_DEFAULT_LED_PIN;
-
 
 void apInit()
 {
-	gpio_init(LED_PIN);
-  gpio_set_dir(LED_PIN, GPIO_OUT);
-
 	lcdBegin(_DEF_LCD1);
 	//lcdBegin(_DEF_LCD2);
 	
@@ -30,7 +25,12 @@ void apMain()
 		
 		//lcdPrintf(_DEF_LCD1, 0, 0, WHITE, "Hello, world!");
 		//lcdUpdateFrame(_DEF_LCD1);
+		if (millis() - pre_time >= 500)
+		{
+			ledToggle(_DEF_LED1);
 
+			pre_time = millis();
+		}
 
 		cliMain();
 	}
