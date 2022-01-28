@@ -12,7 +12,7 @@
 #define      HW_GPIO_MAX_CH         1
 
 #define _USE_HW_I2C
-#define 		 HW_I2C_MAX_CH 					1
+#define 		 HW_I2C_MAX_CH 					2
 
 
 #define _USE_HW_UART
@@ -40,5 +40,9 @@
 #define _USE_HW_LCD
 #define 		 HW_LCD_CH_MAX					1
 
+
+#define _USE_HW_MPU6050
+
+#define _USE_HW_IMU
 
 #endif /* SRC_HW_HW_DEF_H_ */
