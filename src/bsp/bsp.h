@@ -8,10 +8,19 @@
 #include <hardware/clocks.h>
 #include <hardware/pll.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+
 bool bspInit();
 
 uint32_t millis();
 void delay(uint32_t ms);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SRC_BSP_BSP_H_ */
