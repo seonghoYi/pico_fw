@@ -1,7 +1,7 @@
 add_executable(${PRJ_NAME}
-  main.c
+  main.cpp
   
-  ap/ap.c
+  ap/ap.cpp
   bsp/bsp.c
   common/core/qbuffer.c
   hw/hw.c
@@ -14,7 +14,11 @@ add_executable(${PRJ_NAME}
 
   hw/driver/lcd/font.c
   hw/driver/lcd/ssd1306.c
-  hw/driver/lcd.c 
+  hw/driver/lcd.c
+
+  hw/driver/imu/mpu6050.cpp
+  hw/driver/imu/MadgwickAHRS.cpp
+  hw/driver/imu/imu.cpp
 
 )
 
@@ -27,6 +31,7 @@ target_include_directories(${PRJ_NAME} PUBLIC
   common/hw/include
   hw
   hw/include/lcd
+  hw/include/imu
 
 )
 
