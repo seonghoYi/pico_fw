@@ -27,7 +27,7 @@ bool 			ssd1306SetCallBack(void (*func)(void));
 bool ssd1306WriteCommand(uint8_t cmd)
 {
 	bool ret = false;
-	if(i2cMemWrite(_DEF_SSD1306, _DEF_SSD1306_I2C_ADDR, 0x00, 1, &cmd, 1) > 0)
+	if(i2cMemWrites(_DEF_SSD1306, _DEF_SSD1306_I2C_ADDR, 0x00, 1, &cmd, 1) > 0)
 	{
 		ret = true;
 	}
@@ -44,7 +44,7 @@ bool ssd1306WriteData(uint8_t *buf)
 		ret &= ssd1306WriteCommand(0x00);
 		ret &= ssd1306WriteCommand(0x10);
 
-		if(i2cMemWrite(_DEF_SSD1306, _DEF_SSD1306_I2C_ADDR, 0x40, 1, &buf[SSD1306_WIDTH * i], SSD1306_WIDTH) <= 0)
+		if(i2cMemWrites(_DEF_SSD1306, _DEF_SSD1306_I2C_ADDR, 0x40, 1, &buf[SSD1306_WIDTH * i], SSD1306_WIDTH) <= 0)
 		{
 			ret = false;
 		}

@@ -44,7 +44,7 @@ bool i2cBegin(uint8_t ch, uint32_t freq_khz)
 	switch(ch)
 	{
 		case _DEF_I2C1:
-			i2c_tbl[ch].p_hi2c = i2c0;
+			i2c_tbl[_DEF_I2C1].p_hi2c = i2c0;
 			i2c_init(i2c_tbl[_DEF_I2C1].p_hi2c, freq_khz * 1000);
 			gpio_set_function(0, GPIO_FUNC_I2C);
 			gpio_set_function(1, GPIO_FUNC_I2C);
@@ -56,6 +56,17 @@ bool i2cBegin(uint8_t ch, uint32_t freq_khz)
     	//bi_decl(bi_program_description("OLED I2C example for the Raspberry Pi Pico"));
 			ret = true;
 		break;
+    case _DEF_I2C2:
+      i2c_tbl[_DEF_I2C2].p_hi2c = i2c1;
+      i2c_init(i2c_tbl[_DEF_I2C2].p_hi2c, freq_khz * 1000);
+			gpio_set_function(2, GPIO_FUNC_I2C);
+			gpio_set_function(3, GPIO_FUNC_I2C);
+
+			gpio_pull_up(2);
+			gpio_pull_up(3);
+      
+      ret = true;
+    break;
 		default:
 		break;
 	}
@@ -73,7 +84,7 @@ bool i2cIsDeviceReady(uint8_t ch, uint8_t dev_addr)
 		return false;
 	}
 
-	if(i2c_read_blocking(p_handle, dev_addr, &rxdata, 1, false) > 0)
+	if(i2c_read_timeout_us(p_handle, dev_addr, &rxdata, 1, false, 100*1000) > 0)
 	{
 		return true;
 	}
@@ -89,7 +100,7 @@ uint32_t i2cWrite(uint8_t ch, uint16_t dev_addr, uint8_t *p_data, uint16_t size)
 
 	i2c_inst_t *p_handle = i2c_tbl[ch].p_hi2c;
 
-	if (i2c_write_blocking(p_handle, dev_addr >> 1, p_data, size, false) > 0)
+	if (i2c_write_timeout_us(p_handle, dev_addr >> 1, p_data, size, false, 100*1000) > 0)
 	{
 		ret = size;
 	}
@@ -102,7 +113,7 @@ uint32_t i2cRead(uint8_t ch, uint16_t dev_addr, uint8_t *p_data, uint16_t size)
 
 	i2c_inst_t *p_handle = i2c_tbl[ch].p_hi2c;
 
-	if(i2c_read_blocking(p_handle, dev_addr >> 1, p_data, size, false) > 0)
+	if(i2c_read_timeout_us(p_handle, dev_addr >> 1, p_data, size, false, 100*1000) > 0)
 	{
 		ret = size;
 	}
@@ -110,7 +121,7 @@ uint32_t i2cRead(uint8_t ch, uint16_t dev_addr, uint8_t *p_data, uint16_t size)
 	return ret;
 }
 
-uint32_t i2cMemWrite(uint8_t ch, uint16_t dev_addr, uint16_t mem_addr, uint16_t mem_addr_size, uint8_t *p_data, uint16_t size)
+uint32_t i2cMemWrites(uint8_t ch, uint16_t dev_addr, uint16_t mem_addr, uint16_t mem_addr_size, uint8_t *p_data, uint16_t size)
 {
 	uint32_t ret = 0;
 
@@ -135,7 +146,7 @@ uint32_t i2cMemWrite(uint8_t ch, uint16_t dev_addr, uint16_t mem_addr, uint16_t 
 		temp[i] = p_data[i-mem_addr_size];
 	}
 
-	if (i2c_write_blocking(p_handle, dev_addr >> 1, temp, size + mem_addr_size, false) > 0)
+	if (i2c_write_timeout_us(p_handle, dev_addr >> 1, temp, size + mem_addr_size, false, 100*1000) > 0)
 	{
 		ret = size;
 	}
@@ -145,21 +156,35 @@ uint32_t i2cMemWrite(uint8_t ch, uint16_t dev_addr, uint16_t mem_addr, uint16_t 
 	return ret;
 }
 
-uint32_t i2cMemRead(uint8_t ch, uint16_t dev_addr, uint16_t mem_addr, uint16_t mem_addr_size, uint8_t *p_data, uint16_t size)
+uint32_t i2cMemWrite(uint8_t ch, uint16_t dev_addr, uint16_t mem_addr, uint16_t mem_addr_size, uint8_t data)
+{
+	uint32_t ret = 0;
+	ret = i2cMemWrites(ch, dev_addr, mem_addr, mem_addr_size, &data, 1);
+  return ret;
+}
+
+uint32_t i2cMemReads(uint8_t ch, uint16_t dev_addr, uint16_t mem_addr, uint16_t mem_addr_size, uint8_t *p_data, uint16_t size)
 {
 	uint32_t ret = 0;
 
 	i2c_inst_t *p_handle = i2c_tbl[ch].p_hi2c;
 
-	if(i2c_write_blocking(p_handle, dev_addr >> 1, (uint8_t *)&mem_addr, mem_addr_size, true) > 0)
+	if(i2c_write_timeout_us(p_handle, dev_addr >> 1, (uint8_t *)&mem_addr, mem_addr_size, true, 100*1000) > 0)
 	{
-		if(i2c_read_blocking(p_handle, dev_addr >> 1, p_data, size, false) > 0)
+		if(i2c_read_timeout_us(p_handle, dev_addr >> 1, p_data, size, false, 100*1000) > 0)
 		{
 			ret = size;
 		}
 	}
 
 	return ret;
+}
+
+uint32_t i2cMemRead(uint8_t ch, uint16_t dev_addr, uint16_t mem_addr, uint16_t mem_addr_size, uint8_t data)
+{
+  uint32_t ret = 0;
+  ret = i2cMemReads(ch, dev_addr, mem_addr, mem_addr_size, &data, 1);
+  return ret;
 }
 
 
@@ -231,7 +256,7 @@ void cliI2C(cli_args_t *args)
     {
       for (i=0; i<length; i++)
       {
-        i2c_ret = i2cMemRead(ch, dev_addr, reg_addr+i, 1, i2c_data, 1);
+        i2c_ret = i2cMemReads(ch, dev_addr, reg_addr+i, 1, i2c_data, 1);
 
         if (i2c_ret == true)
         {
@@ -247,7 +272,7 @@ void cliI2C(cli_args_t *args)
     else if(args->isStr(0, "write") == true)
     {
       pre_time = millis();
-      i2c_ret = i2cMemWrite(ch, dev_addr, reg_addr, 1, (uint8_t *)&length, 1);
+      i2c_ret = i2cMemWrites(ch, dev_addr, reg_addr, 1, (uint8_t *)&length, 1);
 
       if (i2c_ret == true)
       {
