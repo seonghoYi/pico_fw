@@ -65,6 +65,7 @@ void cliIMU(cli_args_t *args)
 {
   bool ret = true;
   uint32_t update_hz = 0;
+  static uint32_t update_ms = 0;
 
   if (args->argc == 2)
   {
@@ -72,6 +73,15 @@ void cliIMU(cli_args_t *args)
     {
       update_hz = args->getData(1);
       ret = imuBegin(update_hz);
+      if (update_hz == 0)
+      {
+        ret = false;
+      }
+      else
+      {
+        update_ms = 1000 / update_hz;
+      }
+
       if (ret == true)
       {
         cliPrintf("success\r\n");
@@ -88,9 +98,10 @@ void cliIMU(cli_args_t *args)
         while(cliKeepLoop())
         {
           imu.update();
-          cliPrintf("\033[2J");
-          cliPrintf("\033[10;5H");
-          cliPrintf("roll: %3.3f pitch: %3.3f yaw: %3.3f", imu.rpy[ROLL], imu.rpy[PITCH], imu.rpy[YAW]);
+          //cliPrintf("\033[2J");
+          //cliPrintf("\033[10;5H");
+          cliPrintf("roll: %+3.3f pitch: %+3.3f yaw: %+3.3f\r\n", imu.rpy[ROLL], imu.rpy[PITCH], imu.rpy[YAW]);
+          delay(update_ms);
         }
       }
       else if (args->isStr(1, "quaternion") == true)
@@ -98,9 +109,10 @@ void cliIMU(cli_args_t *args)
         while(cliKeepLoop())
         {
           imu.update();
-          cliPrintf("\033[2J");
-          cliPrintf("\033[10;5H");
-          cliPrintf("roll: %3.3f pitch: %3.3f yaw: %3.3f", imu.rpy[ROLL], imu.rpy[PITCH], imu.rpy[YAW]);
+          //cliPrintf("\033[2J");
+          //cliPrintf("\033[10;5H");
+          cliPrintf("roll: %+3.3f pitch: %+3.3f yaw: %+3.3f\r\n", imu.rpy[ROLL], imu.rpy[PITCH], imu.rpy[YAW]);
+          delay(update_ms);
         }
       }
       else if (args->isStr(1, "accel") == true)
@@ -108,9 +120,10 @@ void cliIMU(cli_args_t *args)
         while(cliKeepLoop())
         {
           imu.update();
-          cliPrintf("\033[2J");
-          cliPrintf("\033[10;5H");
-          cliPrintf("x: %3.3f y: %3.3f z: %3.3f", imu.accData[ROLL], imu.accData[PITCH], imu.accData[YAW]);
+          //cliPrintf("\033[2J");
+          //cliPrintf("\033[10;5H");
+          cliPrintf("x: %+d y: %+d z: %+d\r\n", imu.accData[ROLL], imu.accData[PITCH], imu.accData[YAW]);
+          delay(update_ms);
         }
       }
       else if (args->isStr(1, "gyro") == true)
@@ -118,9 +131,10 @@ void cliIMU(cli_args_t *args)
         while(cliKeepLoop())
         {
           imu.update();
-          cliPrintf("\033[2J");
-          cliPrintf("\033[10;5H");
-          cliPrintf("roll: %3.3f pitch: %3.3f yaw: %3.3f", imu.gyroData[ROLL], imu.gyroData[PITCH], imu.gyroData[YAW]);
+          //cliPrintf("\033[2J");
+          //cliPrintf("\033[10;5H");
+          cliPrintf("roll: %+d pitch: %+d yaw: %+d\r\n", imu.gyroData[ROLL], imu.gyroData[PITCH], imu.gyroData[YAW]);
+          delay(update_ms);
         }
       }
     }
