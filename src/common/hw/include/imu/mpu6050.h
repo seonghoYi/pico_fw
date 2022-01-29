@@ -10,9 +10,10 @@ extern "C" {
 
 #ifdef _USE_HW_MPU6050
 
+#define PI        3.14159265f
+#define DEG2RAD   PI/180.0f
 
-bool mpu6050Init(void);
-
+#define MPU_CALI_COUNT 512
 
 class cMPU6050
 {
@@ -21,8 +22,10 @@ class cMPU6050
     
     
     int16_t accRaw[3];
+    int16_t accZero[3];
     int16_t accData[3];
     int16_t gyroRaw[3];
+    int16_t gyroZero[3];
     int16_t gyroData[3];
 
 
@@ -32,16 +35,25 @@ class cMPU6050
     cMPU6050();
 
     bool begin(void);
-    void getGyroRaw(void);
-    void getAccRaw(void);
+    void gyroGetData(void);
+    void accGetData(void);
+    bool accGetCaliDone(void);
+    bool gyroGetCaliDone(void);
 
   private:
     uint16_t i2c_addr;
+
+    uint32_t calibrating_count_acc;
+    uint32_t calibrating_count_gyro;
 
   private:
     bool init(void);
     void accInit(void);
     void gyroInit(void);
+    void accStartCali(void);
+    void gyroStartCali(void);
+    void accCalibration(void);
+    void gyroCalibration(void);
 };
 
 

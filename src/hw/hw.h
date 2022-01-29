@@ -14,6 +14,8 @@ extern "C" {
 #include "lcd.h"
 #include "cli.h"
 
+#include "imu.h"
+
 
 bool hwInit();
 

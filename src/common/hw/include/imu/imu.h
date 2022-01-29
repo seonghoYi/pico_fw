@@ -7,13 +7,7 @@
 #ifdef _USE_HW_IMU
 
 #include "imu/mpu6050.h"
-
-
-
-#define ROLL      0
-#define PITCH     1
-#define YAW       2
-
+#include "imu/MadgwickAHRS.h"
 
 
 
@@ -46,11 +40,11 @@ class cIMU
     cIMU();
 
     bool begin(uint32_t hz);
-
+    uint32_t update(void);
 
   private:
-
-    uint32_t update_ms;
+    Madgwick filter;
+    uint32_t update_hz;
     uint32_t update_us;
 
     void computeIMU(void);

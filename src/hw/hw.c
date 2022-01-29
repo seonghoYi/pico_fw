@@ -13,5 +13,6 @@ bool hwInit()
 	ret &= cliInit();
 	ret &= i2cInit();
 	ret &= lcdInit();
+	ret &= imuInit();
 	return ret;
 }

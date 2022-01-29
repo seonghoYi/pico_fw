@@ -17,6 +17,7 @@ extern "C" {
 bool bspInit();
 
 uint32_t millis();
+uint32_t micros();
 void delay(uint32_t ms);
 
 #ifdef __cplusplus

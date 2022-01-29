@@ -34,6 +34,11 @@
 
 
 
+
+#define ROLL      0
+#define PITCH     1
+#define YAW       2
+
 #define constrain(in,low,high) ((in)<(low)?(low):((in)>(high)?(high):(in)))
 
 #ifndef map

@@ -225,7 +225,7 @@ void cliI2C(cli_args_t *args)
       {
         if (i2cIsDeviceReady(print_ch, i) == true)
         {
-          cliPrintf("I2C CH%d Addr 0x%X : OK\n", print_ch+1, i);
+          cliPrintf("I2C CH%d Addr 0x%X : OK\r\n", print_ch+1, i);
         }
       }
     }
@@ -234,11 +234,11 @@ void cliI2C(cli_args_t *args)
       i2c_ret = i2cBegin(print_ch, 400);
       if (i2c_ret == true)
       {
-        cliPrintf("I2C CH%d Begin OK\n", print_ch + 1);
+        cliPrintf("I2C CH%d Begin OK\r\n", print_ch + 1);
       }
       else
       {
-        cliPrintf("I2C CH%d Begin Fail\n", print_ch + 1);
+        cliPrintf("I2C CH%d Begin Fail\r\n", print_ch + 1);
       }
     }
   }
@@ -260,11 +260,11 @@ void cliI2C(cli_args_t *args)
 
         if (i2c_ret == true)
         {
-          cliPrintf("%d I2C - 0x%02X : 0x%02X\n", print_ch, reg_addr+i, i2c_data[0]);
+          cliPrintf("%d I2C - 0x%02X : 0x%02X\r\n", print_ch, reg_addr+i, i2c_data[0]);
         }
         else
         {
-          cliPrintf("%d I2C - Fail \n", print_ch);
+          cliPrintf("%d I2C - Fail \r\n", print_ch);
           break;
         }
       }
@@ -276,11 +276,11 @@ void cliI2C(cli_args_t *args)
 
       if (i2c_ret == true)
       {
-        cliPrintf("%d I2C - 0x%02X : 0x%02X, %d ms\n", print_ch, reg_addr, length, millis()-pre_time);
+        cliPrintf("%d I2C - 0x%02X : 0x%02X, %d ms\r\n", print_ch, reg_addr, length, millis()-pre_time);
       }
       else
       {
-        cliPrintf("%d I2C - Fail \n", print_ch);
+        cliPrintf("%d I2C - Fail \r\n", print_ch);
       }
     }
     else
@@ -295,10 +295,10 @@ void cliI2C(cli_args_t *args)
 
   if (ret == false)
   {
-    cliPrintf( "i2c begin channel[1~%d]\n", I2C_MAX_CH);
-    cliPrintf( "i2c scan channel[1~%d]\n", I2C_MAX_CH);
-    cliPrintf( "i2c read channel dev_addr reg_addr length\n");
-    cliPrintf( "i2c write channel dev_addr reg_addr data\n");
+    cliPrintf( "i2c begin channel[1~%d]\r\n", I2C_MAX_CH);
+    cliPrintf( "i2c scan channel[1~%d]\r\n", I2C_MAX_CH);
+    cliPrintf( "i2c read channel dev_addr reg_addr length\r\n");
+    cliPrintf( "i2c write channel dev_addr reg_addr data\r\n");
   }
 }
 

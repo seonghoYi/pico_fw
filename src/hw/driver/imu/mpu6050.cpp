@@ -2,26 +2,12 @@
 #include "imu/mpu6050_regs.h"
 #include "i2c.h"
 
-#include "cli.h"
 
 
 #ifdef _USE_HW_MPU6050
 
 
 #define MPU6050_I2C_ADDRESS 0x68 << 1
-
-static void cliMpu6050(cli_args_t *args);
-
-bool mpu6050Init()
-{
-  bool ret = true;
-
-
-  cliAdd("MPU6050", cliMpu6050);
-
-  return ret;
-}
-
 
 
 cMPU6050::cMPU6050()
@@ -84,9 +70,10 @@ void cMPU6050::accInit()
     accRaw[axis] = 0;
     accData[axis] = 0;
   }
+  accStartCali();
 }
 
-void cMPU6050::getAccRaw()
+void cMPU6050::accGetData()
 {
   int16_t x;
   int16_t y;
@@ -111,7 +98,8 @@ void cMPU6050::getAccRaw()
     accData[1] = y;
     accData[2] = z;
   }
-  
+
+  accCalibration();
 }
 
 void cMPU6050::gyroInit()
@@ -121,9 +109,10 @@ void cMPU6050::gyroInit()
     gyroRaw[axis] = 0;
     gyroData[axis] = 0;
   }
+  gyroStartCali();
 }
 
-void cMPU6050::getGyroRaw()
+void cMPU6050::gyroGetData()
 {
   int16_t x;
   int16_t y;
@@ -144,61 +133,117 @@ void cMPU6050::getGyroRaw()
     gyroRaw[1] = y;
     gyroRaw[2] = z;
 
-    gyroData[0] = x;
-    gyroData[1] = y;
-    gyroData[2] = z;
+    gyroData[0] = x * DEG2RAD;
+    gyroData[1] = y * DEG2RAD;
+    gyroData[2] = z * DEG2RAD;
   }
+
+  gyroCalibration();
 }
 
-
-#ifdef _USE_HW_CLI
-
-void cliMpu6050(cli_args_t *args)
+void cMPU6050::accStartCali()
 {
-  bool ret = true;
-  static cMPU6050 mpu;
-
-  if(args->argc == 1)
-  {
-    if(args->isStr(0, "begin"))
-    {
-      ret = mpu.begin();
-      if(ret == false)
-      {
-        cliPrintf("error\n");
-      }
-      else
-      {
-        cliPrintf("success\n");
-      }
-    }
-    else if(args->isStr(0, "getraw"))
-    {
-      mpu.getAccRaw();
-      mpu.getGyroRaw();
-
-      cliPrintf("Acc x: %d, y: %d, z: %d\n", mpu.accData[0], mpu.accData[1], mpu.accData[2]);
-      cliPrintf("Gyr x: %d, y: %d, z: %d\n", mpu.gyroData[0], mpu.gyroData[1], mpu.gyroData[2]);
-    }
-    else
-    {
-      ret = false;
-    }
-  }
-  else
-  {
-    ret = false;
-  }
-  
-
-  if(ret == false)
-  {
-    cliPrintf("mpu6050 begin\n");
-  }
-
+  calibrating_count_acc = MPU_CALI_COUNT;
 }
 
+void cMPU6050::gyroStartCali()
+{
+  calibrating_count_gyro = MPU_CALI_COUNT;
+}
+
+bool cMPU6050::accGetCaliDone()
+{
+  bool ret = false;
+
+  if (calibrating_count_acc == 0)
+  {
+    ret = true;
+  }
+
+  return ret;
+}
+
+bool cMPU6050::gyroGetCaliDone()
+{
+  bool ret = false;
+
+  if (calibrating_count_gyro == 0)
+  {
+    ret = true;
+  }
+
+  return ret;
+}
+
+void cMPU6050::accCalibration()
+{
+  static int32_t a[3];
+
+	if (calibrating_count_acc>0)
+	{
+		calibrating_count_acc--;
+		for (uint8_t axis = 0; axis < 3; axis++)
+		{
+			a[axis] += accData[axis];             // Sum up 512 readings
+			accZero[axis] = a[axis]>>9;          // Calculate average, only the last itteration where (calibratingA == 0) is relevant
+		}
+		if (calibrating_count_acc == 0)
+		{
+			//accZero[YAW] -= ACC_1G;
+      accZero[YAW] = 0;
+		}
+	}
+
+  accData[ROLL]  -=  accZero[ROLL] ;
+  accData[PITCH] -=  accZero[PITCH];
+  accData[YAW]   -=  accZero[YAW] ;
+}
+
+void cMPU6050::gyroCalibration()
+{
+	static int16_t previousGyroData[3];
+	static int32_t g[3];
+
+	memset(previousGyroData, 0, 3 * 2);
+
+	if (calibrating_count_gyro>0)
+	{
+		for (int axis = 0; axis < 3; axis++)
+		{
+			if (calibrating_count_gyro == MPU_CALI_COUNT)
+			{ // Reset g[axis] at start of calibration
+				g[axis]=0;
+				previousGyroData[axis] = gyroData[axis];
+			}
+			if (calibrating_count_gyro % 10 == 0)
+			{
+				//if(abs(gyroADC[axis] - previousGyroADC[axis]) > 8) tilt=1;
+
+				previousGyroData[axis] = gyroData[axis];
+			}
+			g[axis] += gyroData[axis]; // Sum up 512 readings
+			gyroZero[axis]=g[axis]>>9;
+
+			if (calibrating_count_gyro == 1)
+			{
+				//SET_ALARM_BUZZER(ALRM_FAC_CONFIRM, ALRM_LVL_CONFIRM_ELSE);
+			}
+		}
+
+		calibrating_count_gyro--;
+
+		return;
+	}
 
 
-#endif
+  for (int axis = 0; axis < 3; axis++)
+  {
+    gyroData[axis] -= gyroZero[axis];
+
+    //anti gyro glitch, limit the variation between two consecutive readings
+    //gyroADC[axis] = constrain(gyroADC[axis],previousGyroADC[axis]-800,previousGyroADC[axis]+800);
+    previousGyroData[axis] = gyroData[axis];
+  }
+}
+
 #endif
