@@ -10,9 +10,6 @@ extern "C" {
 
 #ifdef _USE_HW_MPU6050
 
-#define PI        3.14159265f
-#define DEG2RAD   PI/180.0f
-
 #define MPU_CALI_COUNT 512
 
 class cMPU6050
@@ -43,8 +40,8 @@ class cMPU6050
   private:
     uint16_t i2c_addr;
 
-    uint32_t calibrating_count_acc;
-    uint32_t calibrating_count_gyro;
+    int16_t calibrating_count_acc;
+    int16_t calibrating_count_gyro;
 
   private:
     bool init(void);

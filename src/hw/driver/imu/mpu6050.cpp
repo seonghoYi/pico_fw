@@ -133,9 +133,9 @@ void cMPU6050::gyroGetData()
     gyroRaw[1] = y;
     gyroRaw[2] = z;
 
-    gyroData[0] = x * DEG2RAD;
-    gyroData[1] = y * DEG2RAD;
-    gyroData[2] = z * DEG2RAD;
+    gyroData[0] = x;
+    gyroData[1] = y;
+    gyroData[2] = z;
   }
 
   gyroCalibration();
@@ -231,10 +231,8 @@ void cMPU6050::gyroCalibration()
 		}
 
 		calibrating_count_gyro--;
-
 		return;
 	}
-
 
   for (int axis = 0; axis < 3; axis++)
   {
