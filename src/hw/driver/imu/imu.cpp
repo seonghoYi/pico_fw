@@ -30,12 +30,14 @@ bool cIMU::begin(uint32_t hz)
   if (b_connected == true)
   {
     filter.begin(update_hz);
+
+    while(!sensor.gyroGetCaliDone())
+    {
+      update();
+    }
   }
 
-  while(!sensor.gyroGetCaliDone())
-  {
-    update();
-  }
+  
 
   return b_connected;
 }
