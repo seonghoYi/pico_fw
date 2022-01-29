@@ -98,8 +98,8 @@ void cliIMU(cli_args_t *args)
         while(cliKeepLoop())
         {
           imu.update();
-          //cliPrintf("\033[2J");
-          //cliPrintf("\033[10;5H");
+          cliPrintf("\033[2J");
+          cliPrintf("\033[10;5H");
           cliPrintf("roll: %+3.3f pitch: %+3.3f yaw: %+3.3f\r\n", imu.rpy[ROLL], imu.rpy[PITCH], imu.rpy[YAW]);
           delay(update_ms);
         }
@@ -109,8 +109,8 @@ void cliIMU(cli_args_t *args)
         while(cliKeepLoop())
         {
           imu.update();
-          //cliPrintf("\033[2J");
-          //cliPrintf("\033[10;5H");
+          cliPrintf("\033[2J");
+          cliPrintf("\033[10;5H");
           cliPrintf("roll: %+3.3f pitch: %+3.3f yaw: %+3.3f\r\n", imu.rpy[ROLL], imu.rpy[PITCH], imu.rpy[YAW]);
           delay(update_ms);
         }
@@ -120,8 +120,8 @@ void cliIMU(cli_args_t *args)
         while(cliKeepLoop())
         {
           imu.update();
-          //cliPrintf("\033[2J");
-          //cliPrintf("\033[10;5H");
+          cliPrintf("\033[2J");
+          cliPrintf("\033[10;5H");
           cliPrintf("x: %+d y: %+d z: %+d\r\n", imu.accData[ROLL], imu.accData[PITCH], imu.accData[YAW]);
           delay(update_ms);
         }
@@ -131,8 +131,8 @@ void cliIMU(cli_args_t *args)
         while(cliKeepLoop())
         {
           imu.update();
-          //cliPrintf("\033[2J");
-          //cliPrintf("\033[10;5H");
+          cliPrintf("\033[2J");
+          cliPrintf("\033[10;5H");
           cliPrintf("roll: %+d pitch: %+d yaw: %+d\r\n", imu.gyroData[ROLL], imu.gyroData[PITCH], imu.gyroData[YAW]);
           delay(update_ms);
         }
