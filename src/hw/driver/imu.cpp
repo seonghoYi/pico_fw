@@ -28,6 +28,15 @@ bool imuBegin(uint32_t update_hz)
   return ret;
 }
 
+
+uint32_t imuUpdate()
+{
+  uint32_t ret = imu.update();
+
+  return ret;
+}
+
+
 float *imuGetRPY(void)
 {
   static float *ret;

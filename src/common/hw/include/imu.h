@@ -14,6 +14,7 @@ extern "C" {
 
 bool imuInit(void);
 bool imuBegin(uint32_t update_hz);
+uint32_t imuUpdate();
 float *imuGetRPY(void);
 float *imuGetQuaternion(void);
 int16_t *imuGetAcc(void);

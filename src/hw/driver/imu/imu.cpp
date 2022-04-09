@@ -56,7 +56,7 @@ uint32_t cIMU::update()
     tTime = micros();
 
 		computeIMU();
-
+    
 		gyroData[0] = sensor.gyroData[0];
 		gyroData[1] = sensor.gyroData[1];
 		gyroData[2] = sensor.gyroData[2];
